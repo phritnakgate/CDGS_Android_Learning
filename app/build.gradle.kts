@@ -47,7 +47,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation(project(":chartmodule"))
-    implementation(fileTree(mapOf("dir" to "lib", "include" to listOf("*.jar", "*.aar"))))
+//    implementation(project(":chartmodule"))
+//    implementation(fileTree(mapOf("dir" to "lib", "include" to listOf("*.jar", "*.aar"))))
 
 }
