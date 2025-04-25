@@ -1,15 +1,14 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id("kotlin-kapt")
 }
 
 android {
-    namespace = "com.example.myfirstandroidapp"
+    namespace = "com.example.chartmodule"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.myfirstandroidapp"
+        applicationId = "com.example.chartmodule"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -46,8 +45,4 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
-    implementation(project(":chartmodule"))
-    implementation(fileTree(mapOf("dir" to "lib", "include" to listOf("*.jar", "*.aar"))))
-
 }

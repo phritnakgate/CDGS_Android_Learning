@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "MyFirstAndroidApp"
 include(":app")
+include(":chartmodule")
