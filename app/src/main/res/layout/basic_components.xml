@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/basic_comp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/bsc_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:fontFamily="@font/kanit"
+        android:text="This is Textview"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:background="@drawable/bg_custom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/bsc_editTxt"
+        android:inputType="textPassword"
+        android:fontFamily="@font/kanit"
+        android:textSize="16sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Enter something"
+        app:layout_constraintTop_toBottomOf="@+id/bsc_txt"
+        android:layout_marginTop="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+    <ImageView
+        android:id="@+id/bsc_imgTest"
+        android:layout_width="100sp"
+        android:layout_height="100sp"
+        android:src="@mipmap/yee_lc"
+        app:layout_constraintTop_toBottomOf="@+id/bsc_editTxt"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="20sp"
+        />
+
+    <ImageView
+        android:id="@+id/bsc_imgTest2"
+        android:layout_width="100sp"
+        android:layout_height="100sp"
+        android:src="@drawable/dino"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/bsc_imgTest"
+        app:layout_constraintTop_toBottomOf="@+id/bsc_editTxt" />
+    <Button
+        android:id="@+id/bsc_btn"
+        android:text="Press Me!"
+        android:fontFamily="@font/kanit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/bsc_editTxt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="100sp"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
