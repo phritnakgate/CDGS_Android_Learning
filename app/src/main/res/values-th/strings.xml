@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MyFirstAndroidApp</string>
+    <string name="app_name">CDG Learning</string>
     <string name="helo_world">สวัสดีโลก</string>
 </resources>
