@@ -52,4 +52,16 @@
         android:layout_marginTop="30dp"
         app:layout_constraintStart_toEndOf="@+id/lnd_login"
         app:layout_constraintTop_toBottomOf="@+id/lnd_logo" />
+
+    <Button
+        android:id="@+id/lnd_recyclerBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/kanit"
+        android:text="Go to RecyclerView"
+        app:layout_constraintTop_toBottomOf="@+id/lnd_logo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

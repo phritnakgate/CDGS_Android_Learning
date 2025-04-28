@@ -16,7 +16,6 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.landing_page)
 
-
         val loginBtn = findViewById<Button>(R.id.lnd_login)
         loginBtn.setOnClickListener {
             Log.d("Login Button", "Login button clicked")
@@ -27,6 +26,12 @@ class MainActivity : AppCompatActivity() {
         signUpBtn.setOnLongClickListener {
             Log.d("Sign Up Button", "Sign up button long clicked")
             true
+        }
+        val gotoRecycler = findViewById<TextView>(R.id.lnd_recyclerBtn)
+        gotoRecycler.setOnClickListener {
+            Log.d("Recycler View", "Recycler view button clicked")
+            val intent = Intent(this, RecyclerViewTutorial::class.java)
+            startActivity(intent)
         }
 
         //LOGCAT
