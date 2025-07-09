@@ -38,12 +38,40 @@
         app:layout_constraintStart_toStartOf="@id/textview_google_calendar_header"
         app:layout_constraintEnd_toEndOf="@id/textview_google_calendar_header"
         />
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/edit_text_task_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:hint="DD/MM/YYYY"
+            android:layout_marginHorizontal="20dp"
+            app:layout_constraintTop_toBottomOf="@id/edit_text_task_description"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/edit_text_task_time"
+            />
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/edit_text_task_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:hint="00:00"
+            android:layout_marginHorizontal="20dp"
+            app:layout_constraintTop_toBottomOf="@id/edit_text_task_description"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/edit_text_task_date"
+            />
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/compatbtn_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Save to Google Calendar"
-        app:layout_constraintTop_toBottomOf="@id/edit_text_task_description"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_task_time"
         app:layout_constraintStart_toStartOf="@id/textview_google_calendar_header"
         app:layout_constraintEnd_toEndOf="@id/textview_google_calendar_header"
         />

@@ -2,9 +2,11 @@ package com.example.myfirstandroidapp
 
 import android.Manifest
 import android.accounts.AccountManager
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -25,6 +27,8 @@ import com.google.api.services.calendar.CalendarScopes
 import com.google.api.services.calendar.model.Event
 import com.google.api.services.calendar.model.EventDateTime
 import pub.devrel.easypermissions.EasyPermissions
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class GoogleCalendarActivity : AppCompatActivity() {
 
@@ -36,12 +40,15 @@ class GoogleCalendarActivity : AppCompatActivity() {
     //UI
     private lateinit var editTextTaskName: AppCompatEditText
     private lateinit var editTextTaskDesc: AppCompatEditText
+    private lateinit var editTextTaskDate: AppCompatEditText
+    private lateinit var editTextTaskTime: AppCompatEditText
     private lateinit var btnSaveCalendar: AppCompatButton
 
     companion object {
         private const val REQUEST_ACCOUNT_PICKER = 1000
         private const val REQUEST_PERMISSION_GET_ACCOUNTS = 1003
     }
+
 
     private val startSelectGoogleAccountForResult: ActivityResultLauncher<Intent> =
         registerForActivityResult(
@@ -56,6 +63,9 @@ class GoogleCalendarActivity : AppCompatActivity() {
                 }
             }
         }
+
+    private var startDate: DateTime? = null
+    private var endDate: DateTime? = null
 
     //Checks if the device supports google play service
     private fun acquireGooglePlayServices() {
@@ -136,36 +146,69 @@ class GoogleCalendarActivity : AppCompatActivity() {
     private fun findView(){
         editTextTaskName = findViewById(R.id.edit_text_task_name)
         editTextTaskDesc = findViewById(R.id.edit_text_task_description)
+        editTextTaskDate = findViewById(R.id.edit_text_task_date)
+        editTextTaskTime = findViewById(R.id.edit_text_task_time)
         btnSaveCalendar = findViewById(R.id.compatbtn_save)
     }
 
     private fun setupEvents(){
+        //Get Current Date&Time
+        val calendar = java.util.Calendar.getInstance()
+
+        editTextTaskDate.setOnClickListener {
+            val datePickerDialog = DatePickerDialog(this@GoogleCalendarActivity,
+                { _, y, m, d ->
+                    val selectedDate = java.util.Calendar.getInstance().apply {
+                        set(y,m,d,0,0,0)
+                        set(java.util.Calendar.MILLISECOND,0)
+                    }
+                    val formattedDate = d.toString().padStart(2,'0') + "/" + (m+1).toString().padStart(2,'0') + "/" + y.toString()
+                    editTextTaskDate.setText(formattedDate)
+
+                    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    startDate = DateTime(dateFormat.format(selectedDate.time))
+                    val temp = selectedDate.clone() as java.util.Calendar
+                    temp.add(java.util.Calendar.DAY_OF_MONTH,1)
+                    endDate = DateTime(dateFormat.format(temp.time))
+                },
+                calendar.get(java.util.Calendar.YEAR),
+                calendar.get(java.util.Calendar.MONTH),
+                calendar.get(java.util.Calendar.DAY_OF_MONTH)
+                )
+            datePickerDialog.show()
+        }
+        editTextTaskTime.setOnClickListener {
+
+        }
         btnSaveCalendar.setOnClickListener {
             createCalendarEvent()
         }
     }
 
     private fun createCalendarEvent() {
+        if(editTextTaskName.text.isNullOrEmpty() || editTextTaskDesc.text.isNullOrEmpty()){
+            Toast.makeText(this@GoogleCalendarActivity, "Please input value!!",Toast.LENGTH_SHORT).show()
+        }
         Thread {
             try {
                 val event = Event()
                     .setSummary(editTextTaskName.text.toString())
                     .setDescription(editTextTaskDesc.text.toString())
 
-                val startDateTime = DateTime("2025-07-08T09:00:00")
+
                 val start = EventDateTime()
-                    .setDateTime(startDateTime)
-                    .setTimeZone("Asia/Bangkok")
+                    .setDate(startDate)
                 event.start = start
 
-                val endDateTime = DateTime("2025-07-08T10:00:00")
                 val end = EventDateTime()
-                    .setDateTime(endDateTime)
-                    .setTimeZone("Asia/Bangkok")
+                    .setDate(endDate)
                 event.end = end
 
                 val createdEvent = mService?.events()?.insert("primary", event)?.execute()
                 Log.d("GoogleCalendarActivity", "Event created: ${createdEvent?.htmlLink}")
+                editTextTaskName.text = null
+                editTextTaskDesc.text = null
+                editTextTaskDate.text = null
 
             } catch (e: UserRecoverableAuthIOException){
                 startActivityForResult(e.intent, 1001)
