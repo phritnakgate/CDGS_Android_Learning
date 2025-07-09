@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/google_calendar_form"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textview_google_calendar_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Google Calendar"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edit_text_task_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Add Task Name Here"
+        android:textSize="14sp"
+        android:layout_marginHorizontal="20dp"
+        app:layout_constraintTop_toBottomOf="@id/textview_google_calendar_header"
+        app:layout_constraintStart_toStartOf="@id/textview_google_calendar_header"
+        app:layout_constraintEnd_toEndOf="@id/textview_google_calendar_header"
+        />
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edit_text_task_description"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:hint="Add Task Description Here"
+        android:textSize="14sp"
+        android:layout_marginHorizontal="20dp"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_task_name"
+        app:layout_constraintStart_toStartOf="@id/textview_google_calendar_header"
+        app:layout_constraintEnd_toEndOf="@id/textview_google_calendar_header"
+        />
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/compatbtn_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save to Google Calendar"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_task_description"
+        app:layout_constraintStart_toStartOf="@id/textview_google_calendar_header"
+        app:layout_constraintEnd_toEndOf="@id/textview_google_calendar_header"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

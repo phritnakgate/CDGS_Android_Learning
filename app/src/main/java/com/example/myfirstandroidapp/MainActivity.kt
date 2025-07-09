@@ -23,9 +23,9 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         val signUpBtn = findViewById<Button>(R.id.lnd_register)
-        signUpBtn.setOnLongClickListener {
-            Log.d("Sign Up Button", "Sign up button long clicked")
-            true
+        signUpBtn.setOnClickListener {
+            val intent = Intent(this@MainActivity, GoogleCalendarActivity::class.java)
+            startActivity(intent)
         }
         val gotoRecycler = findViewById<TextView>(R.id.lnd_recyclerBtn)
         gotoRecycler.setOnClickListener {

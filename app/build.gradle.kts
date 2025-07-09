@@ -49,6 +49,16 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.16.0")
     kapt("com.github.bumptech.glide:compiler:4.16.0")
 
+    //Google Calendar
+    implementation ("com.google.oauth-client:google-oauth-client-jetty:1.23.0")
+    implementation ("com.google.apis:google-api-services-calendar:v3-rev305-1.23.0")
+    implementation ("com.google.android.gms:play-services-auth:20.4.0")
+    implementation ("com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava")
+    implementation("com.google.api-client:google-api-client-android:1.23.0") {
+        exclude(group = "org.apache.httpcomponents")
+    }
+    implementation ("pub.devrel:easypermissions:3.0.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
