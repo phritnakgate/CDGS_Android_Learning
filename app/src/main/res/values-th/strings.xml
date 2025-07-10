@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">CDG Learning</string>
     <string name="helo_world">สวัสดีโลก</string>
+    <string name="landing_google_sign_in">เข้าสู่ระบบด้วย Google</string>
+    <string name="landing_google_sign_out">ออกจากระบบ</string>
 </resources>

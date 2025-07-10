@@ -11,6 +11,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -27,6 +28,10 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this@MainActivity, GoogleCalendarActivity::class.java)
             startActivity(intent)
         }
+//        val signInWithGoogleBtn = findViewById<Button>(R.id.lnd_google_sign_in)
+//        signInWithGoogleBtn.setOnClickListener {
+//
+//        }
         val gotoRecycler = findViewById<TextView>(R.id.lnd_recyclerBtn)
         gotoRecycler.setOnClickListener {
             Log.d("Recycler View", "Recycler view button clicked")
@@ -48,4 +53,5 @@ class MainActivity : AppCompatActivity() {
             insets
         }
     }
+
 }

@@ -34,12 +34,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/kanit"
-        android:text="Login"
+        android:text="Intent Learning"
         app:layout_constraintEnd_toStartOf="@+id/lnd_register"
         app:layout_constraintHorizontal_bias="0.5"
         android:layout_marginTop="30dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lnd_logo" />
+
 
     <Button
         android:id="@+id/lnd_register"
@@ -52,6 +53,20 @@
         android:layout_marginTop="30dp"
         app:layout_constraintStart_toEndOf="@+id/lnd_login"
         app:layout_constraintTop_toBottomOf="@+id/lnd_logo" />
+
+
+    <Button
+        android:id="@+id/lnd_google_sign_in"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/landing_google_sign_in"
+        android:fontFamily="@font/kanit"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/lnd_logo"
+        app:layout_constraintBottom_toTopOf="@id/lnd_recyclerBtn"
+        app:layout_constraintStart_toStartOf="@id/lnd_login"
+        app:layout_constraintEnd_toEndOf="@id/lnd_register"
+        />
 
     <Button
         android:id="@+id/lnd_recyclerBtn"

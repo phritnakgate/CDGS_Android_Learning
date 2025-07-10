@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">CDG Learning</string>
+    <string name="app_name" translatable="false">CDG Learning</string>
+    <string name="default_web_client_id" translatable="false">672244117841-horbgkm2e7sv896p0uc79s4lp9ejab0b.apps.googleusercontent.com</string>
     <string name="helo_world">Hello World</string>
-
+    <string name="landing_google_sign_in">Sign in With Google</string>
+    <string name="landing_google_sign_out">Sign out</string>
 </resources>
