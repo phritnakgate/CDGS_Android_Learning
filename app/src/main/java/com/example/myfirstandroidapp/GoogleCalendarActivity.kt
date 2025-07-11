@@ -39,21 +39,20 @@ import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.CalendarScopes
 import com.google.api.services.calendar.model.Event
 import com.google.api.services.calendar.model.EventDateTime
-import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.auth
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
+import androidx.core.content.edit
 
 class GoogleCalendarActivity : AppCompatActivity() {
 
     //Google Auth
-    private lateinit var auth: FirebaseAuth
     private lateinit var credentialManager: CredentialManager
-    private var currentUser : FirebaseUser? = null
+    private var currentUserEmail: String? = null
+
+    //Firebase Auth
+    //private lateinit var auth: FirebaseAuth
+    //private var currentUser : FirebaseUser? = null
 
     //Google Calendar
     private var mCredential: GoogleAccountCredential? = null
@@ -111,11 +110,12 @@ class GoogleCalendarActivity : AppCompatActivity() {
 
     private fun setupData(){
         // Initialize Firebase Auth and Credential Manager
-        auth = Firebase.auth
-        credentialManager = CredentialManager.create(baseContext)
-        currentUser = auth.currentUser
-        initCalendarServices()
-        if(currentUser == null){
+        //auth = Firebase.auth
+        credentialManager = CredentialManager.create(this@GoogleCalendarActivity)
+        checkForSavedCredentials()
+        //currentUser = auth.currentUser
+        //initCalendarServices()
+        if(currentUserEmail == null){
             btnSignOut.visibility = View.GONE
         }else{
             btnSignOut.visibility = View.VISIBLE
@@ -155,7 +155,7 @@ class GoogleCalendarActivity : AppCompatActivity() {
 
         btnSaveCalendar.setOnClickListener {
             // Check if user is signed in before creating event
-            if (currentUser == null) {
+            if (currentUserEmail == null) {
                 Toast.makeText(this@GoogleCalendarActivity, "Please sign in first", Toast.LENGTH_SHORT).show()
                 launchCredentialManager()
             } else {
@@ -165,6 +165,19 @@ class GoogleCalendarActivity : AppCompatActivity() {
         btnSignOut.setOnClickListener {
             signOut()
         }
+    }
+
+    private fun checkForSavedCredentials() {
+        val savedEmail = getSavedUserSession()
+
+        if (savedEmail != null) {
+            currentUserEmail = savedEmail
+            Log.d("GoogleCalendarActivity", "Found saved session for $savedEmail")
+            initCalendarServices()
+            return
+        }
+
+       launchCredentialManager()
     }
 
     private fun launchCredentialManager() {
@@ -186,7 +199,7 @@ class GoogleCalendarActivity : AppCompatActivity() {
                 )
                 handleSignIn(result.credential)
             } catch (e: GetCredentialException) {
-                Log.e("Google Calendar Activity", "Couldn't retrieve user's credentials: ${e.localizedMessage}")
+                Log.e("GoogleCalendarActivity", "Couldn't retrieve user's credentials: ${e.localizedMessage}")
                 Toast.makeText(this@GoogleCalendarActivity, "Sign in failed: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
             }
         }
@@ -202,37 +215,59 @@ class GoogleCalendarActivity : AppCompatActivity() {
                 payload["email"] as? String
             }
             Log.w("GoogleCalendarActivity", "Signed In with $email")
-            firebaseAuthWithGoogle(googleIdTokenCredential)
+            currentUserEmail = email
+            initCalendarServices()
+            btnSignOut.visibility = View.VISIBLE
+            if (email != null) {
+                savedUserSession(email)
+            }
+            //firebaseAuthWithGoogle(googleIdTokenCredential)
         } else {
             Log.w("GoogleCalendarActivity", "Credential is not of type Google ID!")
         }
     }
 
-    private fun firebaseAuthWithGoogle(googleIdTokenCredential: GoogleIdTokenCredential) {
-        val credential = GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
-        auth.signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    currentUser = auth.currentUser
-                    Log.d("GoogleCalendarActivity", "signInWithCredential:$currentUser")
-                    Log.d("GoogleCalendarActivity", "User: ${currentUser?.displayName}")
-                    Log.d("GoogleCalendarActivity", "Email: ${currentUser?.email}")
-                    Log.d("GoogleCalendarActivity", "UID: ${currentUser?.uid}")
-                    Log.d("GoogleCalendarActivity", "Photo: ${currentUser?.photoUrl}")
-
-                    // Initialize calendar services after successful sign in
-                    initCalendarServices()
-                    btnSignOut.visibility = View.VISIBLE
-                    Toast.makeText(this@GoogleCalendarActivity, "Sign in successful", Toast.LENGTH_SHORT).show()
-                } else {
-                    Log.w("GoogleCalendarActivity", "signInWithCredential:failure", task.exception)
-                    Toast.makeText(this@GoogleCalendarActivity, "Sign in failed", Toast.LENGTH_SHORT).show()
-                }
-            }
+    private fun savedUserSession(email: String){
+        val sharedPref = getSharedPreferences("user_session", MODE_PRIVATE)
+        sharedPref.edit().apply{
+            putString("userEmail",email)
+            putBoolean("isUserLogin",true)
+            apply()
+        }
     }
 
+    private fun getSavedUserSession(): String? {
+        val sharedPrefs = getSharedPreferences("user_session", MODE_PRIVATE)
+        return if (sharedPrefs.getBoolean("isUserLogin", false)) {
+            sharedPrefs.getString("userEmail", null)
+        } else null
+    }
+
+//    private fun firebaseAuthWithGoogle(googleIdTokenCredential: GoogleIdTokenCredential) {
+//        val credential = GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
+//        auth.signInWithCredential(credential)
+//            .addOnCompleteListener(this) { task ->
+//                if (task.isSuccessful) {
+//                    currentUser = auth.currentUser
+//                    Log.d("GoogleCalendarActivity", "signInWithCredential:$currentUser")
+//                    Log.d("GoogleCalendarActivity", "User: ${currentUser?.displayName}")
+//                    Log.d("GoogleCalendarActivity", "Email: ${currentUser?.email}")
+//                    Log.d("GoogleCalendarActivity", "UID: ${currentUser?.uid}")
+//                    Log.d("GoogleCalendarActivity", "Photo: ${currentUser?.photoUrl}")
+//
+//                    // Initialize calendar services after successful sign in
+//                    initCalendarServices()
+//                    btnSignOut.visibility = View.VISIBLE
+//                    Toast.makeText(this@GoogleCalendarActivity, "Sign in successful", Toast.LENGTH_SHORT).show()
+//                } else {
+//                    Log.w("GoogleCalendarActivity", "signInWithCredential:failure", task.exception)
+//                    Toast.makeText(this@GoogleCalendarActivity, "Sign in failed", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//    }
+
     private fun initCalendarServices() {
-        if (currentUser?.email.isNullOrEmpty()) {
+        if (currentUserEmail.isNullOrEmpty()) {
             Log.e("GoogleCalendarActivity", "Current user email is null or empty")
             return
         }
@@ -251,7 +286,7 @@ class GoogleCalendarActivity : AppCompatActivity() {
             this@GoogleCalendarActivity,
             arrayListOf(CalendarScopes.CALENDAR)
         ).setBackOff(ExponentialBackOff()).apply {
-            selectedAccount = currentUser?.email?.let { Account(it,"com.example.myfirstandroidapp") }
+            selectedAccount = currentUserEmail?.let { Account(it,"com.google") }
         }
 
 
@@ -349,8 +384,12 @@ class GoogleCalendarActivity : AppCompatActivity() {
 
     private fun signOut() {
         // Firebase sign out
-        auth.signOut()
-        currentUser = null
+//        auth.signOut()
+//        currentUser = null
+
+        currentUserEmail = null
+        val sharedPrefs = getSharedPreferences("user_session", MODE_PRIVATE)
+        sharedPrefs.edit { clear() }
 
         // Clear calendar services
         mCredential = null
