@@ -3,18 +3,19 @@ package com.example.myfirstandroidapp
 import android.Manifest
 import android.accounts.Account
 import android.app.DatePickerDialog
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.credentials.ClearCredentialStateRequest
@@ -42,17 +43,12 @@ import com.google.api.services.calendar.model.EventDateTime
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
-import androidx.core.content.edit
 
 class GoogleCalendarActivity : AppCompatActivity() {
 
     //Google Auth
     private lateinit var credentialManager: CredentialManager
     private var currentUserEmail: String? = null
-
-    //Firebase Auth
-    //private lateinit var auth: FirebaseAuth
-    //private var currentUser : FirebaseUser? = null
 
     //Google Calendar
     private var mCredential: GoogleAccountCredential? = null
@@ -66,8 +62,19 @@ class GoogleCalendarActivity : AppCompatActivity() {
     private lateinit var btnSaveCalendar: AppCompatButton
     private lateinit var btnSignOut: AppCompatButton
 
+    //All Calendar Logic
     private var startDate: DateTime? = null
     private var endDate: DateTime? = null
+    private val requestCalendarPermissionForResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ){ result ->
+        if (result.resultCode == RESULT_OK) {
+            // Re-attempt to create the event after permission granted
+            createCalendarEvent()
+        } else {
+            Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,12 +116,10 @@ class GoogleCalendarActivity : AppCompatActivity() {
     }
 
     private fun setupData(){
-        // Initialize Firebase Auth and Credential Manager
-        //auth = Firebase.auth
+
         credentialManager = CredentialManager.create(this@GoogleCalendarActivity)
         checkForSavedCredentials()
-        //currentUser = auth.currentUser
-        //initCalendarServices()
+
         if(currentUserEmail == null){
             btnSignOut.visibility = View.GONE
         }else{
@@ -221,7 +226,6 @@ class GoogleCalendarActivity : AppCompatActivity() {
             if (email != null) {
                 savedUserSession(email)
             }
-            //firebaseAuthWithGoogle(googleIdTokenCredential)
         } else {
             Log.w("GoogleCalendarActivity", "Credential is not of type Google ID!")
         }
@@ -242,29 +246,6 @@ class GoogleCalendarActivity : AppCompatActivity() {
             sharedPrefs.getString("userEmail", null)
         } else null
     }
-
-//    private fun firebaseAuthWithGoogle(googleIdTokenCredential: GoogleIdTokenCredential) {
-//        val credential = GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
-//        auth.signInWithCredential(credential)
-//            .addOnCompleteListener(this) { task ->
-//                if (task.isSuccessful) {
-//                    currentUser = auth.currentUser
-//                    Log.d("GoogleCalendarActivity", "signInWithCredential:$currentUser")
-//                    Log.d("GoogleCalendarActivity", "User: ${currentUser?.displayName}")
-//                    Log.d("GoogleCalendarActivity", "Email: ${currentUser?.email}")
-//                    Log.d("GoogleCalendarActivity", "UID: ${currentUser?.uid}")
-//                    Log.d("GoogleCalendarActivity", "Photo: ${currentUser?.photoUrl}")
-//
-//                    // Initialize calendar services after successful sign in
-//                    initCalendarServices()
-//                    btnSignOut.visibility = View.VISIBLE
-//                    Toast.makeText(this@GoogleCalendarActivity, "Sign in successful", Toast.LENGTH_SHORT).show()
-//                } else {
-//                    Log.w("GoogleCalendarActivity", "signInWithCredential:failure", task.exception)
-//                    Toast.makeText(this@GoogleCalendarActivity, "Sign in failed", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//    }
 
     private fun initCalendarServices() {
         if (currentUserEmail.isNullOrEmpty()) {
@@ -359,7 +340,7 @@ class GoogleCalendarActivity : AppCompatActivity() {
 
             } catch (e: UserRecoverableAuthIOException) {
                 runOnUiThread {
-                    startActivityForResult(e.intent, 1001)
+                    requestCalendarPermissionForResult.launch(e.intent)
                 }
             } catch (e: Exception) {
                 runOnUiThread {
@@ -370,22 +351,7 @@ class GoogleCalendarActivity : AppCompatActivity() {
         }.start()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1001) {
-            if (resultCode == RESULT_OK) {
-                // Re-attempt to create the event after permission granted
-                createCalendarEvent()
-            } else {
-                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
     private fun signOut() {
-        // Firebase sign out
-//        auth.signOut()
-//        currentUser = null
 
         currentUserEmail = null
         val sharedPrefs = getSharedPreferences("user_session", MODE_PRIVATE)
@@ -409,45 +375,4 @@ class GoogleCalendarActivity : AppCompatActivity() {
         btnSignOut.visibility = View.GONE
     }
 
-
-//    private fun testAccountAccess() {
-//        try {
-//            val accountManager = AccountManager.get(this)
-//
-//            Log.d("GoogleCalendarActivity", "=== Testing Account Access ===")
-//
-//            // ทดสอบดึงบัญชีทั้งหมด
-//            val allAccounts = accountManager.accounts
-//            Log.d("GoogleCalendarActivity", "Total accounts found: ${allAccounts.size}")
-//
-//            allAccounts.forEachIndexed { index, account ->
-//                Log.d("GoogleCalendarActivity", "Account $index: ${account.name} (${account.type})")
-//            }
-//
-//            // ทดสอบดึงบัญชี Google แบบต่างๆ
-//            val googleTypes = arrayOf("com.google", "com.google.android.gms")
-//            googleTypes.forEach { type ->
-//                val accounts = accountManager.getAccountsByType(type)
-//                Log.d("GoogleCalendarActivity", "Accounts with type '$type': ${accounts.size}")
-//                accounts.forEach { account ->
-//                    Log.d("GoogleCalendarActivity", "  - ${account.name}")
-//                }
-//            }
-//
-//            // ตรวจสอบว่ามีบัญชีที่ตรงกับ currentUser?.email หรือไม่
-//            val matchingAccount = allAccounts.find { it.name == currentUser?.email }
-//            if (matchingAccount != null) {
-//                Log.d("GoogleCalendarActivity", "Found matching account: ${matchingAccount.name} (${matchingAccount.type})")
-//            } else {
-//                Log.e("GoogleCalendarActivity", "No account matches current user email: ${currentUser?.email}")
-//                Log.e("GoogleCalendarActivity", "Available emails: ${allAccounts.map { it.name }}")
-//            }
-//
-//        } catch (e: SecurityException) {
-//            Log.e("GoogleCalendarActivity", "SecurityException: ${e.message}")
-//            Log.e("GoogleCalendarActivity", "Permission may not be granted properly")
-//        } catch (e: Exception) {
-//            Log.e("GoogleCalendarActivity", "Error accessing accounts: ${e.message}")
-//        }
-//    }
 }
