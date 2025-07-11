@@ -327,7 +327,7 @@ class GoogleCalendarActivity : AppCompatActivity() {
                 val createdEvent = mService?.events()?.insert("primary", event)?.execute()
                 Log.d("GoogleCalendarActivity", "Event: $event")
 
-                runOnUiThread {
+                withContext(Dispatchers.Main) {
                     Log.d("GoogleCalendarActivity", "Event created: ${createdEvent?.htmlLink}")
                     Toast.makeText(this@GoogleCalendarActivity, "Event created successfully!", Toast.LENGTH_SHORT).show()
 
