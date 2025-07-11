@@ -352,7 +352,7 @@ class GoogleCalendarActivity : AppCompatActivity() {
                     Toast.makeText(this@GoogleCalendarActivity, "Error creating event: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
                 }
             }
-        }.start()
+        }
     }
 
     private fun signOut() {
