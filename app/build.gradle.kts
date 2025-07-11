@@ -44,6 +44,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
     //RecyclerView & Glide
     implementation("androidx.recyclerview:recyclerview:1.4.0")
     implementation("androidx.cardview:cardview:1.0.0")
@@ -51,21 +53,21 @@ dependencies {
     kapt("com.github.bumptech.glide:compiler:4.16.0")
 
     //Google Calendar
-    implementation ("com.google.oauth-client:google-oauth-client-jetty:1.23.0"){
-        exclude(group = "com.google.guava", module = "guava-jdk5")
-    }
     implementation ("com.google.apis:google-api-services-calendar:v3-rev305-1.23.0"){
         exclude(group = "com.google.guava", module = "guava-jdk5")
     }
-    implementation ("com.google.android.gms:play-services-auth:20.4.0")
     implementation("com.google.guava:guava:31.1-android")
     implementation("com.google.api-client:google-api-client-android:1.23.0"){
         exclude(group = "org.apache.httpcomponents")
         exclude(group = "com.google.guava", module = "guava-jdk5")
     }
+
+    //Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.16.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth")
+
+    //Google Credentials API
     implementation("androidx.credentials:credentials:1.3.0")
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")

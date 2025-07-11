@@ -40,6 +40,7 @@ import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.CalendarScopes
 import com.google.api.services.calendar.model.Event
 import com.google.api.services.calendar.model.EventDateTime
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -262,7 +263,6 @@ class GoogleCalendarActivity : AppCompatActivity() {
             return
         }
 
-       //testAccountAccess()
         mCredential = GoogleAccountCredential.usingOAuth2(
             this@GoogleCalendarActivity,
             arrayListOf(CalendarScopes.CALENDAR)
@@ -308,7 +308,7 @@ class GoogleCalendarActivity : AppCompatActivity() {
             return
         }
 
-        Thread {
+        lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val event = Event()
                     .setSummary(editTextTaskName.text.toString())
@@ -348,7 +348,7 @@ class GoogleCalendarActivity : AppCompatActivity() {
                     Toast.makeText(this@GoogleCalendarActivity, "Error creating event: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
                 }
             }
-        }.start()
+        }
     }
 
     private fun signOut() {
