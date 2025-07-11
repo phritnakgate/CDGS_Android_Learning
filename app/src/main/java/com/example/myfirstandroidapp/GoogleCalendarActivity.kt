@@ -42,6 +42,7 @@ import com.google.api.services.calendar.model.Event
 import com.google.api.services.calendar.model.EventDateTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -323,7 +324,7 @@ class GoogleCalendarActivity : AppCompatActivity() {
                 val createdEvent = mService?.events()?.insert("primary", event)?.execute()
                 Log.d("GoogleCalendarActivity", "Event: $event")
 
-                runOnUiThread {
+                withContext(Dispatchers.Main) {
                     Log.d("GoogleCalendarActivity", "Event created: ${createdEvent?.htmlLink}")
                     Toast.makeText(this@GoogleCalendarActivity, "Event created successfully!", Toast.LENGTH_SHORT).show()
 
@@ -339,11 +340,11 @@ class GoogleCalendarActivity : AppCompatActivity() {
                 }
 
             } catch (e: UserRecoverableAuthIOException) {
-                runOnUiThread {
+                withContext(Dispatchers.Main) {
                     requestCalendarPermissionForResult.launch(e.intent)
                 }
             } catch (e: Exception) {
-                runOnUiThread {
+                withContext(Dispatchers.Main) {
                     Log.e("GoogleCalendarActivity", "Error creating event", e)
                     Toast.makeText(this@GoogleCalendarActivity, "Error creating event: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
                 }
